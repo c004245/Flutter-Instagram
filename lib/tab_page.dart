@@ -13,7 +13,7 @@ class _TabPageState extends State<TabPage> {
     Text('page2'),
     Text('page3'),
   ];
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
