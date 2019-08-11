@@ -20,6 +20,8 @@ class MyApp extends StatelessWidget {
         // Notice that the counter didn't reset back to zero; the application
         // is not resta«rted.
         primarySwatch: Colors.blue,
+        primaryColor: Colors.white,
+        accentColor: Colors.black
       ),
 //      home: MyHomePage(title: 'Flutter Demo Home Page'),
     home: RootPage(),
