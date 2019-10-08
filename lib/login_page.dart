@@ -23,9 +23,7 @@ class LoginPage extends StatelessWidget {
             SignInButton(
               Buttons.Google,
               onPressed: () {
-                _handleSignIn().then((user) {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => TabPage(user)));
+                _handleSignIn().then((user) {print(user);
                 });
               },
             )
@@ -38,9 +36,9 @@ class LoginPage extends StatelessWidget {
   Future<FirebaseUser> _handleSignIn() async {
     GoogleSignInAccount googleUser = await _googleSignIn.signIn();
     GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-    FirebaseUser user = await _auth.signInWithCredential(
-      GoogleAuthProvider.getCredential(idToken: googleAuth.idToken, accessToken: googleAuth.accessToken)
-    );
+    FirebaseUser user = (await _auth.signInWithCredential(
+      GoogleAuthProvider.getCredential(idToken: googleAuth.idToken, accessToken: googleAuth.accessToken))).user;
+    print("signed in " + user.displayName);
     return user;
   }
 }
