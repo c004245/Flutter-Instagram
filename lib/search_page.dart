@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram/create_page.dart';
+import 'package:instagram/detail_post_page.dart';
 
 class SearchPage extends StatefulWidget {
 
@@ -29,18 +31,39 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget _buildBody() {
-    return GridView.builder(gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        childAspectRatio: 1.0,
-        mainAxisSpacing: 1.0,
-      crossAxisSpacing: 1.0),
-     itemCount: 5,
-     itemBuilder: (context, index) {
-      return _buildListItem(context, index);
-     });
+    return StreamBuilder(
+      stream: Firestore.instance.collection('post').snapshots(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+    if (!snapshot.hasData) {
+    return Center(child: CircularProgressIndicator());
+    }
+
+    var items = snapshot.data?.documents ?? [];
+
+    return GridView.builder(
+    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+    crossAxisCount: 3,
+    childAspectRatio: 1.0,
+    mainAxisSpacing: 1.0,
+    crossAxisSpacing: 1.0),
+    itemCount: items.length,
+    itemBuilder: (context, index) {
+    return _buildListItem(context, items[index]);
+    });
+      },
+    );
   }
 
-  Widget _buildListItem(BuildContext context, int index) {
-    return Image.network('https://avatars1.githubusercontent.com/u/14107165?s=400&u=a2b72b01d72acac37ffb395682535ee1bcff7a2b&v=4', fit: BoxFit.cover);
+  Widget _buildListItem(context, document) {
+    return InkWell(
+    onTap: () {
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return DetailPostPage(document);
+      }));
+    },
+      child: Image.network(
+      document['photoUrl'],
+        fit: BoxFit.cover),
+    );
   }
 }
